@@ -1,4 +1,4 @@
-defmodule Gust.Registry.Groups do
+defmodule Gusty.Registry.Groups do
   @moduledoc """
   Declarative definitions of all Tailwind CSS utility groups.
 

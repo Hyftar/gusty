@@ -1,4 +1,4 @@
-defmodule Gust.Registry.Validators do
+defmodule Gusty.Registry.Validators do
   @moduledoc """
   Value-type classifiers for disambiguating Tailwind utility classes.
 

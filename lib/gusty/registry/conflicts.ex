@@ -1,4 +1,4 @@
-defmodule Gust.Registry.Conflicts do
+defmodule Gusty.Registry.Conflicts do
   @moduledoc """
   Defines shorthand → longhand decomposition rules and additional conflict mappings.
 

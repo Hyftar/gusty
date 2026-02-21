@@ -1,4 +1,4 @@
-defmodule Gust.Merger do
+defmodule Gusty.Merger do
   @moduledoc """
   Core merge algorithm for Tailwind CSS classes.
 
@@ -10,21 +10,21 @@ defmodule Gust.Merger do
   - remove: and remove:* prefixes
   """
 
-  alias Gust.Parser
-  alias Gust.Registry.Conflicts
+  alias Gusty.Parser
+  alias Gusty.Registry.Conflicts
 
   @doc """
   Merges two class strings. The second argument overrides the first.
 
   ## Examples
 
-      iex> Gust.Merger.merge("p-4", "p-2")
+      iex> Gusty.Merger.merge("p-4", "p-2")
       "p-2"
 
-      iex> Gust.Merger.merge("p-4", "px-2")
+      iex> Gusty.Merger.merge("p-4", "px-2")
       "px-2"
 
-      iex> Gust.Merger.merge("font-bold text-black", "remove:font-bold grid")
+      iex> Gusty.Merger.merge("font-bold text-black", "remove:font-bold grid")
       "text-black grid"
   """
   @spec merge(String.t(), String.t()) :: String.t()
@@ -114,7 +114,7 @@ defmodule Gust.Merger do
         do_replace_or_decompose(rest, override, override_group, decompositions, ancestors, true, acc)
 
       is_shorthand_of?(base_group, override_group, decompositions, ancestors) ->
-        if Gust.Config.decompose() do
+        if Gusty.Config.decompose() do
           decomposed = decompose_shorthand(base, base_group, override_group, decompositions)
           merged_acc = merge_decomposed_into_acc(acc, decomposed, rest, decompositions, ancestors)
           do_replace_or_decompose(rest, override, override_group, decompositions, ancestors, true, merged_acc)
@@ -204,7 +204,7 @@ defmodule Gust.Merger do
 
   defp extract_value(%{base: base, negative: negative}) do
     segments = String.split(base, "-")
-    trie = Gust.Registry.trie()
+    trie = Gusty.Registry.trie()
     prefix_length = find_prefix_length(trie, segments, 0)
 
     value_segments = Enum.drop(segments, prefix_length)
@@ -243,7 +243,7 @@ defmodule Gust.Merger do
   end
 
   defp do_classify(%{base: base, arbitrary_value: arb_val, arbitrary_variable: arb_var} = _parsed) do
-    case Map.get(Gust.Registry.enum_map(), base) do
+    case Map.get(Gusty.Registry.enum_map(), base) do
       nil -> classify_by_prefix(base, arb_val, arb_var)
       group_id -> {:ok, group_id}
     end
@@ -255,7 +255,7 @@ defmodule Gust.Merger do
     case segments do
       ["text" | rest] when rest != [] ->
         value = Enum.join(rest, "-")
-        {:ok, Gust.Classifier.classify_text(value, arb_val, arb_var)}
+        {:ok, Gusty.Classifier.classify_text(value, arb_val, arb_var)}
 
       ["border" | rest] when rest != [] ->
         classify_border_segments(rest, arb_val)
@@ -265,19 +265,19 @@ defmodule Gust.Merger do
 
         case rest do
           ["offset" | _] ->
-            Gust.Classifier.classify(%{base: base, arbitrary_value: arb_val, arbitrary_variable: arb_var})
+            Gusty.Classifier.classify(%{base: base, arbitrary_value: arb_val, arbitrary_variable: arb_var})
 
           _ ->
-            {:ok, Gust.Classifier.classify_ring(value, arb_val)}
+            {:ok, Gusty.Classifier.classify_ring(value, arb_val)}
         end
 
       ["shadow" | rest] when rest != [] ->
         value = Enum.join(rest, "-")
-        {:ok, Gust.Classifier.classify_shadow(value, arb_val)}
+        {:ok, Gusty.Classifier.classify_shadow(value, arb_val)}
 
       ["stroke" | rest] when rest != [] ->
         value = Enum.join(rest, "-")
-        {:ok, Gust.Classifier.classify_stroke(value, arb_val)}
+        {:ok, Gusty.Classifier.classify_stroke(value, arb_val)}
 
       ["bg" | rest] when rest != [] ->
         classify_bg_segments(rest, arb_val, arb_var)
@@ -289,7 +289,7 @@ defmodule Gust.Merger do
         classify_divide_segments(rest, arb_val)
 
       _ ->
-        Gust.Classifier.classify(%{base: base, arbitrary_value: arb_val, arbitrary_variable: arb_var})
+        Gusty.Classifier.classify(%{base: base, arbitrary_value: arb_val, arbitrary_variable: arb_var})
     end
   end
 
@@ -302,15 +302,15 @@ defmodule Gust.Merger do
       ["separate"] -> {:ok, :border_separate}
 
       ["spacing" | _] ->
-        Gust.Classifier.classify(%{base: "border-#{Enum.join(rest, "-")}", arbitrary_value: arb_val, arbitrary_variable: nil})
+        Gusty.Classifier.classify(%{base: "border-#{Enum.join(rest, "-")}", arbitrary_value: arb_val, arbitrary_variable: nil})
 
       [dir | value_parts] when dir in ~w(x y t r b l s e) ->
         value = Enum.join(value_parts, "-")
-        {:ok, Gust.Classifier.classify_border(value, dir, arb_val)}
+        {:ok, Gusty.Classifier.classify_border(value, dir, arb_val)}
 
       value_parts ->
         value = Enum.join(value_parts, "-")
-        {:ok, Gust.Classifier.classify_border(value, nil, arb_val)}
+        {:ok, Gusty.Classifier.classify_border(value, nil, arb_val)}
     end
   end
 
@@ -340,7 +340,7 @@ defmodule Gust.Merger do
       _ ->
         value = Enum.join(rest, "-")
 
-        if Gust.Registry.Validators.number?(value) do
+        if Gusty.Registry.Validators.number?(value) do
           {:ok, :outline_w}
         else
           {:ok, :outline_color}

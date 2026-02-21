@@ -1,4 +1,4 @@
-defmodule Gust.Registry do
+defmodule Gusty.Registry do
   @moduledoc """
   Compiles group definitions into a prefix trie at compile time.
 
@@ -7,7 +7,7 @@ defmodule Gust.Registry do
   `{:group, group_id, valid_values}` entries.
   """
 
-  alias Gust.Registry.Groups
+  alias Gusty.Registry.Groups
 
   @doc """
   Returns the compiled prefix trie.

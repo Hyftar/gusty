@@ -1,8 +1,8 @@
-defmodule Gust do
+defmodule Gusty do
   @moduledoc """
   Lightweight Tailwind CSS class merging for Elixir.
 
-  Gust provides utilities for constructing and merging Tailwind CSS class lists,
+  Gusty provides utilities for constructing and merging Tailwind CSS class lists,
   handling the gotcha that class attribute order doesn't determine CSS specificity.
 
   Supports both Tailwind V3 and V4 class naming conventions.
@@ -10,32 +10,32 @@ defmodule Gust do
   ## Usage
 
       # Build class strings with conditional inclusion and conflict resolution
-      Gust.classes(["p-4", "px-2", [hidden: is_hidden, "font-bold": is_bold]])
+      Gusty.classes(["p-4", "px-2", [hidden: is_hidden, "font-bold": is_bold]])
       #=> "px-2 hidden" (p-4 dropped, px-2 wins)
 
       # Merge classes with intelligent conflict resolution
-      Gust.merge("p-4 bg-red-500", "p-2")
+      Gusty.merge("p-4 bg-red-500", "p-2")
       #=> "bg-red-500 p-2"
 
       # Longhand overrides shorthand: shorthand is dropped
-      Gust.merge("p-4", "px-2")
+      Gusty.merge("p-4", "px-2")
       #=> "px-2"
 
       # Remove specific classes during merge
-      Gust.merge("font-bold text-black", "remove:font-bold grid")
+      Gusty.merge("font-bold text-black", "remove:font-bold grid")
       #=> "text-black grid"
 
       # Remove all base classes
-      Gust.merge("font-bold text-black", "remove:* grid")
+      Gusty.merge("font-bold text-black", "remove:* grid")
       #=> "grid"
 
   ## Sigil
 
-      import Gust
+      import Gusty
       ~t"p-4 mt-2"
   """
 
-  alias Gust.Merger
+  alias Gusty.Merger
 
   @doc """
   Builds a class string from mixed inputs with conditional inclusion.
@@ -46,22 +46,22 @@ defmodule Gust do
 
   ## Examples
 
-      iex> Gust.classes("p-4 mt-2")
+      iex> Gusty.classes("p-4 mt-2")
       "p-4 mt-2"
 
-      iex> Gust.classes(["p-4", "mt-2"])
+      iex> Gusty.classes(["p-4", "mt-2"])
       "p-4 mt-2"
 
-      iex> Gust.classes(["p-4", "p-2"])
+      iex> Gusty.classes(["p-4", "p-2"])
       "p-2"
 
-      iex> Gust.classes(["p-4", "px-2"])
+      iex> Gusty.classes(["p-4", "px-2"])
       "px-2"
 
-      iex> Gust.classes(["p-4", [hidden: true, "font-bold": false]])
+      iex> Gusty.classes(["p-4", [hidden: true, "font-bold": false]])
       "p-4 hidden"
 
-      iex> Gust.classes(["mt-1 mx-2", ["pt-2": true, "pb-4": false]])
+      iex> Gusty.classes(["mt-1 mx-2", ["pt-2": true, "pb-4": false]])
       "mt-1 mx-2 pt-2"
   """
   @spec classes(binary() | list()) :: String.t()
@@ -86,20 +86,20 @@ defmodule Gust do
 
   The second argument's classes override conflicting classes in the first argument.
   When a longhand overrides a shorthand, the shorthand is dropped (e.g., `p-4` + `px-2` → `px-2`).
-  Directional decomposition is available as an opt-in; see `Gust.Config`.
+  Directional decomposition is available as an opt-in; see `Gusty.Config`.
 
   ## Examples
 
-      iex> Gust.merge("p-4", "p-2")
+      iex> Gusty.merge("p-4", "p-2")
       "p-2"
 
-      iex> Gust.merge("p-4", "px-2")
+      iex> Gusty.merge("p-4", "px-2")
       "px-2"
 
-      iex> Gust.merge("font-bold", "font-thin")
+      iex> Gusty.merge("font-bold", "font-thin")
       "font-thin"
 
-      iex> Gust.merge("bg-blue-500", "bg-red-400")
+      iex> Gusty.merge("bg-blue-500", "bg-red-400")
       "bg-red-400"
   """
   @spec merge(binary(), binary()) :: String.t()
@@ -120,7 +120,7 @@ defmodule Gust do
 
   ## Examples
 
-      iex> Gust.remove("p-4 mt-2 font-bold", "mt-2")
+      iex> Gusty.remove("p-4 mt-2 font-bold", "mt-2")
       "p-4 font-bold"
   """
   @spec remove(binary(), binary()) :: String.t()
@@ -140,17 +140,17 @@ defmodule Gust do
 
   ## Examples
 
-      iex> import Gust
+      iex> import Gusty
       iex> ~t"p-4 mt-2"
       "p-4 mt-2"
 
-      iex> import Gust
+      iex> import Gusty
       iex> ~t"p-4 p-2"
       "p-2"
   """
   defmacro sigil_t({:<<>>, _meta, pieces}, _modifiers) do
     quote do
-      Gust.classes(unquote({:<<>>, [], pieces}))
+      Gusty.classes(unquote({:<<>>, [], pieces}))
     end
   end
 

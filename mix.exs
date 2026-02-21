@@ -1,9 +1,9 @@
-defmodule Gust.MixProject do
+defmodule Gusty.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :gust,
+      app: :gusty,
       version: "0.1.0",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,

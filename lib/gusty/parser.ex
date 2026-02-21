@@ -1,4 +1,4 @@
-defmodule Gust.Parser do
+defmodule Gusty.Parser do
   @moduledoc """
   Parses Tailwind CSS class strings into structured representations.
 
@@ -64,7 +64,7 @@ defmodule Gust.Parser do
   end
 
   defp strip_class_prefix(class) do
-    prefix = Gust.Config.class_prefix()
+    prefix = Gusty.Config.class_prefix()
 
     if prefix != "" and String.starts_with?(class, prefix) do
       {String.slice(class, String.length(prefix)..-1//1), prefix}

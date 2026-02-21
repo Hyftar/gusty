@@ -1,4 +1,4 @@
-defmodule Gust.Classifier do
+defmodule Gusty.Classifier do
   @moduledoc """
   Classifies a parsed Tailwind class into a group ID.
 
@@ -6,8 +6,8 @@ defmodule Gust.Classifier do
   ambiguous prefixes (text-*, border-*, ring-*, shadow-*, stroke-*).
   """
 
-  alias Gust.Registry
-  alias Gust.Registry.Validators
+  alias Gusty.Registry
+  alias Gusty.Registry.Validators
 
   @doc """
   Classifies a parsed class into a group ID.
