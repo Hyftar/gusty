@@ -16,9 +16,9 @@ defmodule Gust do
       Gust.merge("p-4 bg-red-500", "p-2")
       #=> "bg-red-500 p-2"
 
-      # Directional decomposition
+      # Longhand overrides shorthand: shorthand is dropped
       Gust.merge("p-4", "px-2")
-      #=> "py-4 px-2"
+      #=> "px-2"
 
       # Remove specific classes during merge
       Gust.merge("font-bold text-black", "remove:font-bold grid")
@@ -31,8 +31,7 @@ defmodule Gust do
   ## Sigil
 
       import Gust
-      ~t[p-4 mt-2]
-      ~t[p-4 #{if true, do: "px-2"}]
+      ~t"p-4 mt-2"
   """
 
   alias Gust.Merger
@@ -72,7 +71,8 @@ defmodule Gust do
   Merges base classes with override classes.
 
   The second argument's classes override conflicting classes in the first argument.
-  Understands Tailwind's directional shorthands (e.g., `p-4` + `px-2` → `py-4 px-2`).
+  When a longhand overrides a shorthand, the shorthand is dropped (e.g., `p-4` + `px-2` → `px-2`).
+  Directional decomposition is available as an opt-in; see `Gust.Config`.
 
   ## Examples
 

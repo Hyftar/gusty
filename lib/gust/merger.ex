@@ -4,7 +4,8 @@ defmodule Gust.Merger do
 
   Handles:
   - Simple group conflicts (same group → last wins)
-  - Directional decomposition (p-4 + px-2 → px-2 py-4)
+  - Shorthand drop: longhand overrides shorthand (p-4 + px-2 → px-2)
+  - Directional decomposition (opt-in): shorthand split into non-conflicting children
   - Override conflicts (size-* overrides w-* and h-*)
   - remove: and remove:* prefixes
   """
@@ -21,7 +22,7 @@ defmodule Gust.Merger do
       "p-2"
 
       iex> Gust.Merger.merge("p-4", "px-2")
-      "py-4 px-2"
+      "px-2"
 
       iex> Gust.Merger.merge("font-bold text-black", "remove:font-bold grid")
       "text-black grid"
