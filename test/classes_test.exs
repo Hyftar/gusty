@@ -29,6 +29,18 @@ defmodule Gust.ClassesTest do
     test "nested list" do
       assert Gust.classes(["mt-1 mx-2", ["pt-2": true, "pb-4": false]]) == "mt-1 mx-2 pt-2"
     end
+
+    test "same group: last wins" do
+      assert Gust.classes(["p-4", "p-2"]) == "p-2"
+    end
+
+    test "shorthand dropped when longhand overrides" do
+      assert Gust.classes(["p-4", "px-2"]) == "px-2"
+    end
+
+    test "conditional conflicts resolved" do
+      assert Gust.classes(["p-4", [hidden: true, "p-2": true]]) == "hidden p-2"
+    end
   end
 
   describe "remove/2" do

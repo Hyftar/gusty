@@ -9,8 +9,9 @@ defmodule Gust do
 
   ## Usage
 
-      # Build class strings with conditional inclusion
-      Gust.classes(["p-4", "mt-2", [hidden: is_hidden, "font-bold": is_bold]])
+      # Build class strings with conditional inclusion and conflict resolution
+      Gust.classes(["p-4", "px-2", [hidden: is_hidden, "font-bold": is_bold]])
+      #=> "px-2 hidden" (p-4 dropped, px-2 wins)
 
       # Merge classes with intelligent conflict resolution
       Gust.merge("p-4 bg-red-500", "p-2")
@@ -41,6 +42,7 @@ defmodule Gust do
 
   Accepts strings, lists, and keyword lists. Keyword lists are treated as
   conditional: the key (class name) is included only if the value is truthy.
+  Classes are merged left-to-right, so later entries win on conflicts.
 
   ## Examples
 
@@ -50,6 +52,12 @@ defmodule Gust do
       iex> Gust.classes(["p-4", "mt-2"])
       "p-4 mt-2"
 
+      iex> Gust.classes(["p-4", "p-2"])
+      "p-2"
+
+      iex> Gust.classes(["p-4", "px-2"])
+      "px-2"
+
       iex> Gust.classes(["p-4", [hidden: true, "font-bold": false]])
       "p-4 hidden"
 
@@ -57,12 +65,18 @@ defmodule Gust do
       "mt-1 mx-2 pt-2"
   """
   @spec classes(binary() | list()) :: String.t()
-  def classes(input) when is_binary(input), do: input
+  def classes(input) when is_binary(input) do
+    input
+    |> String.split(~r/\s+/, trim: true)
+    |> Enum.reduce("", &Merger.merge(&2, &1))
+    |> String.trim_leading()
+  end
 
   def classes(input) when is_list(input) do
     input
     |> flatten_classes()
-    |> Enum.join(" ")
+    |> Enum.reduce("", &Merger.merge(&2, &1))
+    |> String.trim_leading()
   end
 
   def classes(nil), do: ""
@@ -136,7 +150,7 @@ defmodule Gust do
   """
   defmacro sigil_t({:<<>>, _meta, pieces}, _modifiers) do
     quote do
-      Gust.merge("", unquote({:<<>>, [], pieces}))
+      Gust.classes(unquote({:<<>>, [], pieces}))
     end
   end
 

@@ -74,7 +74,7 @@ Gust.merge(["p-4", "m-2"], "p-2")
 
 ### `Gust.classes/1`
 
-Builds a class string from a mixed list of strings and conditionals.
+Builds a class string from a mixed list of strings and conditionals. Classes are merged left-to-right, so later entries win on conflicts.
 
 ```elixir
 Gust.classes("p-4 mt-2")
@@ -82,6 +82,14 @@ Gust.classes("p-4 mt-2")
 
 Gust.classes(["p-4", "mt-2"])
 #=> "p-4 mt-2"
+
+# Conflicts are resolved: last wins
+Gust.classes(["p-4", "p-2"])
+#=> "p-2"
+
+# Longhand overrides shorthand: shorthand is dropped
+Gust.classes(["p-4", "px-2"])
+#=> "px-2"
 
 # Keyword lists: key is the class, value is the condition
 Gust.classes(["p-4", [hidden: true, "font-bold": false]])
